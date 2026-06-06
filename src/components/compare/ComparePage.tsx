@@ -88,7 +88,9 @@ export function ComparePage() {
           <div className="text-center py-20">
             <div className="text-5xl mb-4">⚖️</div>
             <h2 className="font-serif text-xl font-semibold mb-3">No colleges added yet</h2>
-            <p className="text-muted text-sm mb-6">Browse colleges and click "+ Compare" to add them here</p>
+            <p className="text-muted text-sm mb-6">
+  Browse colleges and click &quot;+ Compare&quot; to add them here
+</p>
             <Link href="/" className="btn-gold inline-block">Browse Colleges</Link>
           </div>
         ) : (
