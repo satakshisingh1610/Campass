@@ -1,16 +1,15 @@
-import NextAuth from "next-auth";
+import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
-import type { NextAuthOptions } from "next-auth";
 
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
 });
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -20,7 +19,6 @@ const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         const parsed = loginSchema.safeParse(credentials);
-
         if (!parsed.success) return null;
 
         const { email, password } = parsed.data;
@@ -32,7 +30,6 @@ const authOptions: NextAuthOptions = {
         if (!user || !user.passwordHash) return null;
 
         const valid = await bcrypt.compare(password, user.passwordHash);
-
         if (!valid) return null;
 
         return {
@@ -44,18 +41,13 @@ const authOptions: NextAuthOptions = {
     }),
   ],
 
-  session: {
-    strategy: "jwt",
-  },
+  session: { strategy: "jwt" },
 
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
+      if (user) token.id = user.id;
       return token;
     },
-
     async session({ session, token }) {
       if (session.user) {
         (session.user as any).id = token.id as string;
@@ -70,7 +62,3 @@ const authOptions: NextAuthOptions = {
 
   secret: process.env.NEXTAUTH_SECRET,
 };
-
-const handler = NextAuth(authOptions);
-
-export { handler as GET, handler as POST };
