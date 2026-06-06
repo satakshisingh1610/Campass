@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-cream: #FDFAF4;
+    --color-gold: #C8963E;
+    --color-gold-light: #F5E6C8;
+    --color-gold-pale: #FBF4E3;
+    --color-sage: #4A6741;
+    --color-sage-light: #E8F0E6;
+    --color-rust: #8B3A2A;
+    --color-rust-light: #F5E8E5;
+    --color-ink: #1A1208;
+    --color-muted: #7A6A50;
+    --color-border: #E8DFC8;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-ink text-white px-6 py-3 rounded-xl font-semibold font-sans transition-all hover:bg-gold hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-ink disabled:hover:scale-100;
+  }
+
+  .btn-gold {
+    @apply bg-gold text-white px-5 py-2.5 rounded-xl font-semibold font-sans transition-all hover:bg-[#B8862E] hover:scale-[1.02] active:scale-[0.98];
+  }
+
+  .btn-outline {
+    @apply border border-border text-muted px-4 py-2 rounded-lg text-sm font-medium font-sans transition-all hover:border-gold hover:text-gold bg-transparent;
+  }
+
+  .card {
+    @apply bg-white border border-border rounded-2xl shadow-card transition-all;
+  }
+
+  .card-hover {
+    @apply hover:shadow-card-hover hover:-translate-y-1 hover:border-gold cursor-pointer;
+  }
+
+  .tag {
+    @apply bg-gold-pale text-gold px-3 py-1 rounded-full text-xs font-medium;
+  }
+
+  .badge-sage {
+    @apply bg-sage-light text-sage px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+
+  .badge-rust {
+    @apply bg-rust-light text-rust px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+
+  .filter-chip {
+    @apply border border-border bg-white text-muted px-4 py-1.5 rounded-full text-sm font-medium cursor-pointer transition-all hover:border-gold hover:text-gold hover:bg-gold-pale;
+  }
+
+  .filter-chip-active {
+    @apply border-gold text-gold bg-gold-pale;
+  }
+
+  .input-field {
+    @apply border-[1.5px] border-border bg-[#FEFCF7] px-3.5 py-2.5 rounded-xl text-sm font-sans text-ink outline-none transition-all focus:border-gold placeholder:text-muted/50;
+  }
+
+  .section-title {
+    @apply font-serif text-xl font-semibold text-ink mb-4;
+  }
+
+  .page-wrapper {
+    @apply min-h-screen bg-cream;
+  }
+}

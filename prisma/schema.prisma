@@ -1,0 +1,158 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  passwordHash  String?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  savedColleges SavedCollege[]
+  comparisons   SavedComparison[]
+  reviews       Review[]
+
+  @@map("users")
+}
+
+model College {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  type          CollegeType
+  stream        String
+  location      String
+  city          String
+  state         String
+  emoji         String
+  bgGradient    String
+  nirfRank      Int?
+  rating        Float    @default(0)
+  reviewCount   Int      @default(0)
+  established   Int
+  intake        Int
+  annualFees    Int      // in rupees
+  feeDisplay    String
+  avgPackage    Float    // in LPA
+  maxPackage    Float    // in LPA or Cr
+  placementRate Int      // percentage
+  overview      String   @db.Text
+  accreditation String?
+  website       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  courses        Course[]
+  tags           CollegeTag[]
+  topRecruiters  TopRecruiter[]
+  reviews        Review[]
+  savedBy        SavedCollege[]
+  comparisonsA   SavedComparison[] @relation("CollegeA")
+  comparisonsB   SavedComparison[] @relation("CollegeB")
+  comparisonsC   SavedComparison[] @relation("CollegeC")
+
+  @@map("colleges")
+}
+
+enum CollegeType {
+  IIT
+  NIT
+  PRIVATE
+  DEEMED
+  CENTRAL
+  STATE
+}
+
+model Course {
+  id         String  @id @default(cuid())
+  name       String
+  duration   String
+  stream     String
+  collegeId  String
+  college    College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+
+  @@map("courses")
+}
+
+model CollegeTag {
+  id        String  @id @default(cuid())
+  label     String
+  collegeId String
+  college   College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+
+  @@map("college_tags")
+}
+
+model TopRecruiter {
+  id        String  @id @default(cuid())
+  name      String
+  collegeId String
+  college   College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+
+  @@map("top_recruiters")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  rating    Float
+  text      String   @db.Text
+  batch     String?
+  userId    String
+  collegeId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  college College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+
+  @@map("reviews")
+}
+
+model SavedCollege {
+  id        String   @id @default(cuid())
+  userId    String
+  collegeId String
+  savedAt   DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  college College @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, collegeId])
+  @@map("saved_colleges")
+}
+
+model SavedComparison {
+  id         String   @id @default(cuid())
+  userId     String
+  collegeAId String
+  collegeBId String
+  collegeCId String?
+  savedAt    DateTime @default(now())
+
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  collegeA College @relation("CollegeA", fields: [collegeAId], references: [id], onDelete: Cascade)
+  collegeB College @relation("CollegeB", fields: [collegeBId], references: [id], onDelete: Cascade)
+  collegeC College? @relation("CollegeC", fields: [collegeCId], references: [id], onDelete: Cascade)
+
+  @@map("saved_comparisons")
+}
+
+model PredictorQuery {
+  id        String   @id @default(cuid())
+  exam      String
+  rank      Int
+  category  String
+  stream    String?
+  results   Json
+  createdAt DateTime @default(now())
+
+  @@map("predictor_queries")
+}
